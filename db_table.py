@@ -82,7 +82,10 @@ class db_table:
         query                = "SELECT %s FROM %s" % (columns_query_string, self.name)
         # build where query string
         if where:
-            where_query_string = [ "%s = '%s'" % (k,v) for k,v in where.items() ]
+            where_query_string = [ "%s = '%s'" % (k,v) for k,v in where.items() if k != "speakers"]
+            """ special where case for looking one speaker where there can be multiple speakers in the table value. 
+               For this replaced = with LIKE """
+            where_query_string += [ "%s LIKE '%s'" % (k,v) for k,v in where.items() if k == "speakers"]
             query             += " WHERE " + ' AND '.join(where_query_string)
         
         result = []
