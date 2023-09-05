@@ -48,7 +48,6 @@ class db_table:
     #
     def create_table(self):
         # { "id": "integer", "name": "text" } -> "id integer, name text"
-        """ updated this line to make it compatible with python3"""
         columns_query_string = ', '.join([ "%s %s" % (k,v) for k,v in self.schema.items() ])
 
         # CREATE TABLE IF NOT EXISTS users (id integer PRIMARY KEY, name text)
@@ -83,7 +82,7 @@ class db_table:
         # build where query string
         if where:
             where_query_string = [ "%s = '%s'" % (k,v) for k,v in where.items() if k != "speakers"]
-            """ special where case for looking one speaker where there can be multiple speakers in the table value. 
+            """special case for looking one speaker where there can be multiple speakers in the table value. 
                For this replaced = with LIKE """
             where_query_string += [ "%s LIKE '%s'" % (k,v) for k,v in where.items() if k == "speakers"]
             query             += " WHERE " + ' AND '.join(where_query_string)
@@ -129,8 +128,7 @@ class db_table:
         # cursor.execute("INSERT INTO %s (%s) VALUES (%s)" % (self.name, columns_query, values_query))
         # print(len(values_query))
         """ added this line to fix the SQLite operational error"""
-        cursor.execute("INSERT INTO %s (%s) VALUES (?, ?, ?, ?, ?, ?, ?, ?)" % (self.name, columns_query), values_query)
-        print("done")
+        cursor.execute("INSERT INTO %s (%s) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)" % (self.name, columns_query), values_query)
         cursor.close()
         self.db_conn.commit()
         return cursor.lastrowid
